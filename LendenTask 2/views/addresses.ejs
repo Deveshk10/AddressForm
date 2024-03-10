@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="./style.css">
+        <title>Addresses</title>
+        <style>
+            h1{
+                text-align: center;
+            }
+    body{
+        background: linear-gradient(to right, #3498db, #2ecc71);
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: white;
+    }
+    th, td {
+        padding: 10px;
+        border: 1px solid black;
+    }
+    
+</style>
+    </head>
+    <body>
+
+        <h1>Addresses</h1>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Street</th>
+                    <th>City</th>
+                    <th>State</th>
+                    <th>Zip</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% addresses.forEach(function(address) { %>
+                <tr id="addressRow<%= address._id %>">
+                    <td><%= address.street %></td>
+                    <td><%= address.city %></td>
+                    <td><%= address.state %></td>
+                    <td><%= address.zip %></td>
+                    <td>
+                        <button id="editButton<%= address._id %>"
+                            onclick="showEditButtons('<%= address._id %>')">Edit</button>
+                        <button style="display: none"
+                            id="updateButton<%= address._id %>"
+                            onclick="updateAddress('<%= address._id %>', '<%= address.street %>', '<%= address.city %>', '<%= address.state %>', '<%= address.zip %>')">Update</button>
+                        <button style="display: none"
+                            id="deleteButton<%= address._id %>"
+                            onclick="deleteAddress('<%= address._id %>')">Delete</button>
+                    </td>
+                </tr>
+                <% }); %>
+            </tbody>
+        </table>
+
+        <button class="button-17"><a href="/">Add a new address</a></button>
+
+        <script>
+    function showEditButtons(id) {
+        document.getElementById("updateButton" + id).style.display = "inline-block";
+        document.getElementById("deleteButton" + id).style.display = "inline-block";
+        document.getElementById("editButton" + id).style.display = "none";
+    }
+
+    function updateAddress(id, street, city, state, zip) {
+      
+        window.location.href = "/update_form?id=" + id + "&street=" + encodeURIComponent(street) + "&city=" + encodeURIComponent(city) + "&state=" + encodeURIComponent(state) + "&zip=" + encodeURIComponent(zip);
+    }
+
+    function deleteAddress(id) {
+        // Prompt user confirmation before deleting
+        if (window.confirm("Are you sure you want to delete this address?")) {
+        
+            fetch("/delete/" + id, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+               
+                if (data.success) {
+                    // Address was deleted successfully, remove the row from the table
+                    const row = document.getElementById("addressRow" + id);
+                    row.parentNode.removeChild(row);
+                } else {
+                    // There was an error deleting the address, handle it here
+                    alert("An error occurred while deleting the address.");
+                }
+            })
+            .catch(error => {
+                
+                console.error(error);
+                alert("An error occurred while deleting the address.");
+            });
+        }
+    }
+</script>
+
+    </body>
+</html>

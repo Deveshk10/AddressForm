@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Update Address</title>
+<style>
+    body{
+        background: linear-gradient(to right, #3498db, #2ecc71);
+    }
+
+    form {
+        max-width: 400px;
+        margin: 0 auto;
+    }
+    input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0;
+        box-sizing: border-box;
+    }
+    input[type="submit"] {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+    }
+    .error-message {
+        color: red;
+        font-size: 0.8em;
+    }
+</style>
+</head>
+<body>
+
+<h1 style="text-align: center;">Update Address</h1>
+
+<form id="updateForm" action="/update" method="post" onsubmit="return validateForm()">
+    <input type="hidden" id="id" name="id" value="<%= id %>">
+    <label for="street">Street Address:</label>
+    <input type="text" id="street" name="street" value="<%= street %>" required>
+    <span class="error-message" id="streetError"></span>
+
+    <label for="city">City:</label>
+    <input type="text" id="city" name="city" value="<%= city %>" required>
+    <span class="error-message" id="cityError"></span>
+
+    <label for="state">State:</label>
+    <input type="text" id="state" name="state" value="<%= state %>" required>
+    <span class="error-message" id="stateError"></span>
+
+    <label for="zip">Zip Code:</label>
+    <input type="text" id="zip" name="zip" value="<%= zip %>" required>
+    <span class="error-message" id="zipError"></span>
+
+    <input type="submit" value="Update">
+</form>
+
+<script>
+function validateForm() {
+    const street = document.getElementById('street').value;
+    const city = document.getElementById('city').value;
+    const state = document.getElementById('state').value;
+    const zip = document.getElementById('zip').value;
+
+    
+    document.querySelectorAll('.error-message').forEach(element => element.textContent = '');
+
+    let isValid = true;
+
+    if (!street.trim()) {
+        document.getElementById('streetError').textContent = 'Street address is required';
+        isValid = false;
+    }
+
+  
+    if (!city.trim()) {
+        document.getElementById('cityError').textContent = 'City is required';
+        isValid = false;
+    }
+
+
+    if (!state.trim()) {
+        document.getElementById('stateError').textContent = 'State is required';
+        isValid = false;
+    }
+
+    if (!zip.trim()) {
+        document.getElementById('zipError').textContent = 'Zip code is required';
+        isValid = false;
+    } else if (!/^\d{6}$/.test(zip)) {
+        document.getElementById('zipError').textContent = 'Zip code must be a 6-digit integer';
+        isValid = false;
+    }
+
+    return isValid;
+}
+</script>
+
+</body>
+</html>
